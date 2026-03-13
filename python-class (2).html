@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Clase interactiva de introducción a Python - Construcción de Algoritmos">
+    <meta name="theme-color" content="#1A1A2E">
+    <title>Introducción a Python - Construcción de Algoritmos</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Mono:wght@400;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --accent: #FFD23F;
+            --dark: #1A1A2E;
+            --darker: #0F0F1E;
+            --light: #F7F7FF;
+            --success: #06D6A0;
+            --error: #EF476F;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: 
+                linear-gradient(45deg, var(--primary) 2px, transparent 2px) 0 0,
+                linear-gradient(-45deg, var(--secondary) 2px, transparent 2px) 0 0;
+            background-size: 60px 60px;
+            animation: bgMove 20s linear infinite;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            padding: 2rem 3rem;
+            border-bottom: 4px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 0.5rem;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .subtitle {
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.3s forwards;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 1rem;
+            padding: 2rem 3rem;
+            background: var(--dark);
+            position: sticky;
+            top: 140px;
+            z-index: 99;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 1.2rem 2rem;
+            background: var(--darker);
+            border: 2px solid var(--secondary);
+            color: var(--light);
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--accent);
+            box-shadow: 0 5px 30px rgba(255, 107, 53, 0.6);
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            animation: expandWidth 0.8s ease-out;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .content-box {
+            background: var(--dark);
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .content-box h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .content-box p, .content-box ul {
+            color: var(--light);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .content-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .content-box li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .content-box li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--darker);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.3);
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-title {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .code-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light);
+            opacity: 0.6;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: var(--darker);
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--light);
+        }
+
+        /* Highlight box */
+        .highlight {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 210, 63, 0.1));
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .highlight strong {
+            color: var(--accent);
+        }
+
+        /* Examples grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .example-card {
+            background: var(--dark);
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .example-card:hover::before {
+            left: 100%;
+        }
+
+        .example-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .example-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .example-card p {
+            color: var(--light);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Exercise box */
+        .exercise-box {
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.1), rgba(0, 78, 137, 0.1));
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .exercise-box h4 {
+            color: var(--success);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .exercise-box ol {
+            margin-left: 1.5rem;
+            color: var(--light);
+        }
+
+        .exercise-box li {
+            margin: 0.8rem 0;
+            font-size: 1.05rem;
+        }
+
+        /* Output example */
+        .output-example {
+            background: var(--dark);
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--success);
+        }
+
+        .output-example::before {
+            content: '💻 Salida esperada:';
+            display: block;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        /* Responsive Design */
+        
+        /* Tablets (768px - 1024px) */
+        @media (max-width: 1024px) {
+            header {
+                padding: 1.5rem 2rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+                letter-spacing: -1px;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+                letter-spacing: 2px;
+            }
+            
+            nav {
+                padding: 1.5rem 2rem;
+                top: 120px;
+                gap: 1rem;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-btn {
+                padding: 1rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            main {
+                padding: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 2rem;
+            }
+            
+            .content-box {
+                padding: 1.5rem;
+            }
+            
+            .examples-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Mobile landscape y tablets pequeñas (481px - 767px) */
+        @media (max-width: 767px) {
+            header {
+                padding: 1.2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                letter-spacing: 0;
+            }
+            
+            .subtitle {
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+            }
+            
+            nav {
+                padding: 1rem;
+                top: 100px;
+                gap: 0.75rem;
+                flex-direction: column;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                padding: 0.9rem 1rem;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+            
+            main {
+                padding: 1.5rem;
+            }
+            
+            .section h2 {
+                font-size: 1.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .content-box {
+                padding: 1.2rem;
+                margin: 1.5rem 0;
+            }
+            
+            .content-box h3 {
+                font-size: 1.3rem;
+            }
+            
+            .content-box p, .content-box ul {
+                font-size: 0.95rem;
+            }
+            
+            code {
+                font-size: 0.9rem;
+            }
+            
+            pre {
+                padding: 1.2rem;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .example-card {
+                padding: 1.2rem;
+            }
+            
+            .highlight {
+                padding: 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .exercise-box {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Mobile portrait (320px - 480px) */
+        @media (max-width: 480px) {
+            :root {
+                font-size: 14px;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .subtitle {
+                font-size: 0.7rem;
+                letter-spacing: 0.5px;
+            }
+            
+            nav {
+                padding: 0.8rem;
+                top: 85px;
+                gap: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .content-box {
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 8px;
+            }
+            
+            .content-box h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .content-box p, .content-box ul {
+                font-size: 0.9rem;
+            }
+            
+            .content-box li {
+                padding: 0.4rem 0;
+                padding-left: 1.5rem;
+            }
+            
+            .content-box li::before {
+                font-size: 1.2rem;
+            }
+            
+            code {
+                font-size: 0.85rem;
+            }
+            
+            pre {
+                padding: 1rem;
+            }
+            
+            .highlight {
+                padding: 1rem;
+                font-size: 0.85rem;
+                margin: 1rem 0;
+            }
+            
+            .example-card {
+                padding: 1rem;
+            }
+            
+            .example-card h4 {
+                font-size: 1.1rem;
+            }
+            
+            .example-card p {
+                font-size: 0.85rem;
+            }
+
+            .exercise-box {
+                padding: 1rem;
+            }
+
+            .exercise-box h4 {
+                font-size: 1.1rem;
+            }
+
+            .exercise-box li {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Mejoras para dispositivos táctiles */
+        @media (hover: none) and (pointer: coarse) {
+            .nav-btn, .example-card {
+                -webkit-tap-highlight-color: rgba(255, 107, 53, 0.3);
+                min-height: 44px;
+            }
+            
+            .nav-btn:active {
+                transform: scale(0.97);
+                transition: transform 0.1s;
+            }
+            
+            * {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Landscape en móviles */
+        @media (max-width: 767px) and (orientation: landscape) {
+            nav {
+                position: relative;
+                top: auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .nav-btn {
+                flex: 1 1 calc(50% - 0.5rem);
+                min-width: auto;
+            }
+        }
+        
+        /* Tablets landscape */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .examples-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Pantallas muy anchas */
+        @media (min-width: 1400px) {
+            main {
+                max-width: 1600px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border-top: 4px solid var(--primary);
+            padding: 2rem 3rem;
+            text-align: center;
+            margin-top: 4rem;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-org {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-team {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        @media (max-width: 767px) {
+            footer {
+                padding: 1.5rem 1.5rem;
+                margin-top: 3rem;
+            }
+
+            .footer-org {
+                font-size: 1rem;
+                letter-spacing: 1px;
+            }
+
+            .footer-team {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            footer {
+                padding: 1.2rem 1rem;
+                margin-top: 2rem;
+            }
+
+            .footer-org {
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+            .footer-team {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <header>
+        <h1>Python</h1>
+        <div class="subtitle">Construcción de Algoritmos</div>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" onclick="showSection(0)">¿Qué es Python?</button>
+        <button class="nav-btn" onclick="showSection(1)">Zen de Python</button>
+        <button class="nav-btn" onclick="showSection(2)">Entrada/Salida</button>
+        <button class="nav-btn" onclick="showSection(3)">Condicionales IF</button>
+        <button class="nav-btn" onclick="showSection(4)">Bucles FOR</button>
+    </nav>
+
+    <main>
+        <!-- SECCIÓN 1: ¿Qué es Python? -->
+        <section class="section active" id="section-0">
+            <h2>¿Qué es Python?</h2>
+            
+            <div class="content-box">
+                <h3>Un lenguaje de programación poderoso y versátil</h3>
+                <p>Python es un lenguaje de programación de alto nivel, interpretado y de propósito general. Creado por Guido van Rossum en 1991, se ha convertido en uno de los lenguajes más populares del mundo.</p>
+            </div>
+
+            <div class="content-box">
+                <h3>Características principales</h3>
+                <ul>
+                    <li><strong>Sintaxis clara y legible:</strong> Python se lee casi como inglés, lo que facilita su aprendizaje</li>
+                    <li><strong>Interpretado:</strong> No necesitas compilar, ejecutas directamente el código</li>
+                    <li><strong>Multiplataforma:</strong> Funciona en Windows, Mac, Linux y más</li>
+                    <li><strong>Amplia biblioteca estándar:</strong> Miles de módulos listos para usar</li>
+                    <li><strong>Multiparadigma:</strong> Soporta programación procedural, orientada a objetos y funcional</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>💡 Dato curioso:</strong> El nombre "Python" viene de los Monty Python, el grupo de comedia británico, ¡no de la serpiente!
+            </div>
+
+            <div class="content-box">
+                <h3>¿Dónde se usa Python?</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <h4>🤖 Inteligencia Artificial</h4>
+                        <p>Machine Learning, Deep Learning, procesamiento de lenguaje natural</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>🌐 Desarrollo Web</h4>
+                        <p>Django, Flask, FastAPI para crear aplicaciones web potentes</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>📊 Análisis de Datos</h4>
+                        <p>Pandas, NumPy, Matplotlib para ciencia de datos</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>⚙️ Automatización</h4>
+                        <p>Scripts para automatizar tareas repetitivas</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Tu primer programa en Python</h3>
+                <p>El clásico "Hola Mundo" y algunas operaciones básicas:</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Ejemplo: Hola Mundo</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Mi primer programa en Python
+print("¡Hola, Mundo!")
+print("Python es increíble")
+
+# Operaciones matemáticas básicas
+print("\n--- Matemáticas básicas ---")
+print("5 + 3 =", 5 + 3)
+print("10 - 4 =", 10 - 4)
+print("6 * 7 =", 6 * 7)
+print("15 / 3 =", 15 / 3)
+
+# Variables
+nombre = "Python"
+año = 1991
+print(f"\n{nombre} fue creado en {año}")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: Zen de Python -->
+        <section class="section" id="section-1">
+            <h2>El Zen de Python</h2>
+            
+            <div class="content-box">
+                <h3>La filosofía de Python</h3>
+                <p>El Zen de Python es un conjunto de 19 principios que guían el diseño y uso del lenguaje Python. Fue escrito por Tim Peters en 1999 y se ha convertido en la filosofía fundamental de la comunidad Python.</p>
+                
+                <div class="highlight">
+                    <strong>💡 Easter Egg:</strong> Puedes ver el Zen de Python escribiendo <code>import this</code> en el intérprete de Python.
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Los 19 principios</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">The Zen of Python, by Tim Peters</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code>Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">El Zen de Python - Traducción al Español</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code>Bello es mejor que feo.
+Explícito es mejor que implícito.
+Simple es mejor que complejo.
+Complejo es mejor que complicado.
+Plano es mejor que anidado.
+Espaciado es mejor que denso.
+La legibilidad cuenta.
+Los casos especiales no son tan especiales como para quebrantar las reglas.
+Aunque lo práctico gana a la pureza.
+Los errores nunca deberían dejarse pasar silenciosamente.
+A menos que hayan sido silenciados explícitamente.
+Frente a la ambigüedad, rechaza la tentación de adivinar.
+Debería haber una —y preferiblemente solo una— manera obvia de hacerlo.
+Aunque esa manera puede no ser obvia al principio a menos que seas holandés.
+Ahora es mejor que nunca.
+Aunque nunca es a menudo mejor que *ahora* mismo.
+Si la implementación es difícil de explicar, es una mala idea.
+Si la implementación es fácil de explicar, puede que sea una buena idea.
+Los espacios de nombres (namespaces) son una gran idea ¡hagamos más de eso!</code></pre>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Traducción e interpretación</h3>
+                
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <h4>🎨 Bello es mejor que feo</h4>
+                        <p>El código debe ser estéticamente agradable y elegante. La belleza en el código significa claridad y simplicidad.</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>🔍 Explícito es mejor que implícito</h4>
+                        <p>El código debe ser claro sobre lo que hace. No ocultes la funcionalidad detrás de "magia" innecesaria.</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>✨ Simple es mejor que complejo</h4>
+                        <p>Busca la solución más simple que funcione. La simplicidad es una virtud en programación.</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>📖 La legibilidad cuenta</h4>
+                        <p>El código se lee más veces de las que se escribe. Prioriza que sea fácil de entender.</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>🎯 Debe haber una forma obvia de hacerlo</h4>
+                        <p>Python promueve que haya una manera clara y preferida de resolver cada problema.</p>
+                    </div>
+                    <div class="example-card">
+                        <h4>⏰ Ahora es mejor que nunca</h4>
+                        <p>Es mejor hacer algo ahora que posponerlo indefinidamente, pero no a costa de la calidad.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Ejemplos prácticos</h3>
+                <p>Veamos cómo aplicar algunos principios del Zen en código real:</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">❌ Código que viola el Zen</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Implícito y poco claro
+def f(x):
+    return x[0] + x[1] if len(x) > 1 else x[0]
+
+# Complejo e ilegible
+resultado = sum([i for i in range(100) if i % 3 == 0 or i % 5 == 0])
+
+# Variables con nombres poco descriptivos
+a = 10
+b = 20
+c = a * b</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">✅ Código que sigue el Zen</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Explícito y claro
+def sumar_primeros_elementos(lista):
+    """Suma los primeros dos elementos de una lista, o el primero si solo hay uno."""
+    if len(lista) > 1:
+        return lista[0] + lista[1]
+    else:
+        return lista[0]
+
+# Simple y legible
+numeros_especiales = []
+for numero in range(100):
+    if numero % 3 == 0 or numero % 5 == 0:
+        numeros_especiales.append(numero)
+resultado = sum(numeros_especiales)
+
+# Variables con nombres descriptivos
+base = 10
+altura = 20
+area_rectangulo = base * altura</code></pre>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>🎓 Reflexión:</strong> El Zen de Python no son reglas estrictas, sino guías filosóficas. A medida que programes más, entenderás mejor cómo aplicarlas. La experiencia te enseñará cuándo seguirlas al pie de la letra y cuándo ser pragmático.
+            </div>
+
+            <div class="content-box">
+                <h3>¿Por qué es importante el Zen?</h3>
+                <ul>
+                    <li><strong>Cultura de la comunidad:</strong> Une a los programadores de Python bajo una filosofía común</li>
+                    <li><strong>Calidad del código:</strong> Fomenta buenas prácticas de programación desde el inicio</li>
+                    <li><strong>Mantenibilidad:</strong> El código que sigue el Zen es más fácil de mantener y entender</li>
+                    <li><strong>Colaboración:</strong> Facilita el trabajo en equipo al tener estándares compartidos</li>
+                    <li><strong>Aprendizaje:</strong> Guía a los principiantes hacia el "estilo Python"</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Ver el Zen en Python</span>
+                    <div class="code-controls">
+                        <div class="control-dot"></div>
+                        <div class="control-dot"></div>
+                        <div class="control-dot"></div>
+                    </div>
+                </div>
+                <pre><code># Ejecuta este código en tu computadora
+import this
+
+# Verás aparecer todo el Zen de Python
+# ¡Es un easter egg oficial de Python!</code></pre>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: Entrada y Salida -->
+        <section class="section" id="section-2">
+            <h2>Entrada y Salida de Datos</h2>
+            
+            <div class="content-box">
+                <h3>Función print() - Mostrar información</h3>
+                <p>La función <code>print()</code> permite mostrar información en la pantalla. Es la forma más común de ver resultados en Python.</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Ejemplos de print()</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Diferentes formas de usar print()
+
+# Imprimir texto simple
+print("Hola desde Python")
+
+# Imprimir múltiples valores
+print("El resultado es:", 42)
+
+# Imprimir con separadores personalizados
+print("Python", "es", "genial", sep=" → ")
+
+# Concatenación de strings
+nombre = "Ana"
+edad = 20
+print("Me llamo " + nombre + " y tengo " + str(edad) + " años")
+
+# f-strings (forma moderna y recomendada)
+print(f"Me llamo {nombre} y tengo {edad} años")
+
+# Saltos de línea
+print("Primera línea\nSegunda línea\nTercera línea")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Función input() - Recibir datos del usuario</h3>
+                <p>La función <code>input()</code> permite que el usuario ingrese información desde el teclado.</p>
+                
+                <div class="highlight">
+                    <strong>⚠️ Importante:</strong> <code>input()</code> siempre devuelve un string (texto). Si necesitas números, debes convertirlos usando <code>int()</code> o <code>float()</code>.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Ejemplos de input()</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Ejemplo 1: Entrada de texto
+nombre = input("¿Cómo te llamas? ")
+print(f"¡Hola, {nombre}!")
+
+# Ejemplo 2: Entrada de números
+edad_texto = input("¿Cuántos años tienes? ")
+edad = int(edad_texto)  # Convertir string a entero
+print(f"Tienes {edad} años")
+print(f"El próximo año tendrás {edad + 1} años")
+
+# Ejemplo 3: Operaciones matemáticas
+num1 = int(input("Primer número: "))
+num2 = int(input("Segundo número: "))
+
+suma = num1 + num2
+resta = num1 - num2
+producto = num1 * num2
+
+print(f"\n{num1} + {num2} = {suma}")
+print(f"{num1} - {num2} = {resta}")
+print(f"{num1} × {num2} = {producto}")</code></pre>
+                </div>
+            </div>
+
+            <div class="exercise-box">
+                <h4>📝 Ejercicios Propuestos</h4>
+                <ol>
+                    <li>Crea un programa que pida tu nombre y tu edad, luego muestre un mensaje de bienvenida personalizado.</li>
+                    <li>Escribe un programa que pida dos números y muestre su suma, resta, multiplicación y división.</li>
+                    <li>Crea un programa que calcule el área de un rectángulo pidiendo base y altura al usuario.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: Condicionales IF -->
+        <section class="section" id="section-3">
+            <h2>Estructuras Condicionales - IF</h2>
+            
+            <div class="content-box">
+                <h3>¿Qué son las condicionales?</h3>
+                <p>Las estructuras condicionales permiten que tu programa tome decisiones. Ejecutan diferentes bloques de código dependiendo de si una condición es verdadera o falsa.</p>
+                
+                <div class="highlight">
+                    <strong>Sintaxis básica:</strong><br>
+                    <code>if condición:</code><br>
+                    <code>&nbsp;&nbsp;&nbsp;&nbsp;# código si es verdadero</code><br>
+                    <code>else:</code><br>
+                    <code>&nbsp;&nbsp;&nbsp;&nbsp;# código si es falso</code>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>IF simple y IF-ELSE</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Ejemplos básicos</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Ejemplo 1: IF simple
+edad = 18
+
+if edad >= 18:
+    print("✓ Eres mayor de edad")
+    print("Puedes votar")
+
+print("Este mensaje siempre se muestra")
+
+# Ejemplo 2: IF-ELSE
+temperatura = 25
+
+if temperatura > 30:
+    print("🌡️ Hace mucho calor")
+else:
+    print("🌡️ El clima está agradable")
+
+# Ejemplo 3: Operadores de comparación
+numero = 42
+
+if numero == 42:
+    print(f"✓ {numero} es igual a 42")
+
+if numero != 100:
+    print(f"✓ {numero} es diferente de 100")
+
+if numero > 40:
+    print(f"✓ {numero} es mayor que 40")
+
+if numero <= 50:
+    print(f"✓ {numero} es menor o igual a 50")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>IF-ELIF-ELSE (múltiples condiciones)</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Sistema de calificaciones</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Sistema de calificaciones
+nota = 85
+
+if nota >= 90:
+    print("📝 Calificación: A - ¡Excelente!")
+elif nota >= 80:
+    print("📝 Calificación: B - ¡Muy bien!")
+elif nota >= 70:
+    print("📝 Calificación: C - Bien")
+elif nota >= 60:
+    print("📝 Calificación: D - Suficiente")
+else:
+    print("📝 Calificación: F - Necesitas mejorar")
+
+# Condiciones con operadores lógicos
+edad = 20
+tiene_licencia = True
+
+print("\n--- Verificación para conducir ---")
+if edad >= 18 and tiene_licencia:
+    print("✓ Puedes conducir")
+elif edad >= 18 and not tiene_licencia:
+    print("⚠️ Tienes la edad pero necesitas licencia")
+else:
+    print("✗ No tienes la edad suficiente")
+
+# Verificar rangos
+temperatura = 22
+
+print("\n--- Estado del clima ---")
+if temperatura < 0:
+    print("❄️ Congelamiento")
+elif 0 <= temperatura < 15:
+    print("🧊 Frío")
+elif 15 <= temperatura < 25:
+    print("😊 Templado")
+elif 25 <= temperatura < 35:
+    print("☀️ Calor")
+else:
+    print("🔥 Extremadamente caliente")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Operadores en Python</h3>
+                <p><strong>Operadores de comparación:</strong></p>
+                <ul>
+                    <li><code>==</code> : Igual a</li>
+                    <li><code>!=</code> : Diferente de</li>
+                    <li><code>&gt;</code> : Mayor que</li>
+                    <li><code>&lt;</code> : Menor que</li>
+                    <li><code>&gt;=</code> : Mayor o igual que</li>
+                    <li><code>&lt;=</code> : Menor o igual que</li>
+                </ul>
+                
+                <p><strong>Operadores lógicos:</strong></p>
+                <ul>
+                    <li><code>and</code> : Y lógico (ambas condiciones deben ser verdaderas)</li>
+                    <li><code>or</code> : O lógico (al menos una condición debe ser verdadera)</li>
+                    <li><code>not</code> : Negación (invierte el valor de verdad)</li>
+                </ul>
+            </div>
+
+            <div class="exercise-box">
+                <h4>📝 Ejercicios Propuestos</h4>
+                <ol>
+                    <li>Crea un programa que determine si un número es par o impar.</li>
+                    <li>Escribe un programa que clasifique un número como positivo, negativo o cero.</li>
+                    <li>Crea una calculadora simple que pida dos números y una operación (+, -, *, /) y muestre el resultado.</li>
+                    <li>Escribe un programa que determine si un año es bisiesto o no.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: Bucles FOR -->
+        <section class="section" id="section-4">
+            <h2>Bucles FOR</h2>
+            
+            <div class="content-box">
+                <h3>¿Qué es un bucle FOR?</h3>
+                <p>Un bucle <code>for</code> permite repetir un bloque de código un número específico de veces. Es perfecto para iterar sobre secuencias como listas, rangos de números, strings, etc.</p>
+                
+                <div class="highlight">
+                    <strong>Sintaxis básica:</strong><br>
+                    <code>for variable in secuencia:</code><br>
+                    <code>&nbsp;&nbsp;&nbsp;&nbsp;# código a repetir</code>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>FOR con range()</h3>
+                <p>La función <code>range()</code> genera una secuencia de números. Es la forma más común de usar bucles for.</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Ejemplos con range()</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Ejemplo 1: range(n) - de 0 a n-1
+print("Contando del 0 al 4:")
+for i in range(5):
+    print(f"  {i}")
+
+# Ejemplo 2: range(inicio, fin) - de inicio a fin-1
+print("\nContando del 1 al 10:")
+for i in range(1, 11):
+    print(i, end=" ")
+print()  # Salto de línea
+
+# Ejemplo 3: range(inicio, fin, paso)
+print("\nNúmeros pares del 0 al 20:")
+for i in range(0, 21, 2):
+    print(i, end=" ")
+print()
+
+# Ejemplo 4: Conteo regresivo
+print("\n🚀 Cuenta regresiva:")
+for i in range(5, 0, -1):
+    print(f"  {i}...")
+print("  ¡Despegue! 🚀")
+
+# Ejemplo 5: Tabla de multiplicar
+numero = 7
+print(f"\nTabla del {numero}:")
+for i in range(1, 11):
+    resultado = numero * i
+    print(f"  {numero} × {i} = {resultado}")</code></pre>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>FOR con listas y strings</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Iteración sobre secuencias</span>
+                        <div class="code-controls">
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                            <div class="control-dot"></div>
+                        </div>
+                    </div>
+                    <pre><code># Ejemplo 1: Iterar sobre una lista
+frutas = ["🍎 Manzana", "🍌 Banana", "🍊 Naranja", "🍇 Uvas"]
+print("Mi lista de frutas:")
+for fruta in frutas:
+    print(f"  - {fruta}")
+
+# Ejemplo 2: Iterar sobre un string
+palabra = "PYTHON"
+print(f"\nLetras de '{palabra}':")
+for letra in palabra:
+    print(f"  [{letra}]", end=" ")
+print()
+
+# Ejemplo 3: Suma acumulada
+numeros = [10, 20, 30, 40, 50]
+suma = 0
+print(f"\nSumando números: {numeros}")
+for num in numeros:
+    suma += num
+    print(f"  Suma parcial: {suma}")
+print(f"Suma total: {suma}")
+
+# Ejemplo 4: FOR con condicionales
+print("\nNúmeros del 1 al 15 (FizzBuzz):")
+for i in range(1, 16):
+    if i % 3 == 0 and i % 5 == 0:
+        print(f"  {i}: FizzBuzz")
+    elif i % 3 == 0:
+        print(f"  {i}: Fizz")
+    elif i % 5 == 0:
+        print(f"  {i}: Buzz")
+    else:
+        print(f"  {i}")
+
+# Ejemplo 5: Patrón con FOR
+print("\nPatrón de asteriscos:")
+for i in range(1, 6):
+    print("  " + "★" * i)</code></pre>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Funciones útiles con FOR</h3>
+                <ul>
+                    <li><code>range(n)</code> : Genera números de 0 a n-1</li>
+                    <li><code>range(inicio, fin)</code> : Genera números de inicio a fin-1</li>
+                    <li><code>range(inicio, fin, paso)</code> : Genera números con incremento personalizado</li>
+                    <li><code>len(lista)</code> : Devuelve el tamaño de una lista</li>
+                    <li><code>enumerate(lista)</code> : Itera con índice y valor</li>
+                </ul>
+            </div>
+
+            <div class="exercise-box">
+                <h4>📝 Ejercicios Propuestos</h4>
+                <ol>
+                    <li>Crea un programa que imprima todos los números impares del 1 al 50.</li>
+                    <li>Escribe un programa que calcule el factorial de un número usando un bucle for.</li>
+                    <li>Crea un programa que pida 5 números al usuario y calcule su promedio.</li>
+                    <li>Escribe un programa que dibuje un triángulo de asteriscos de altura N (el usuario ingresa N).</li>
+                    <li>Crea un programa que verifique si una palabra es palíndromo (se lee igual al revés).</li>
+                </ol>
+                
+                <div class="output-example">Ejemplo ejercicio 4 con N=5:
+*
+**
+***
+****
+*****</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-org">IEEE Colombian Caribbean Section</div>
+            <div class="footer-team">Uso exclusivo del SAC Team</div>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        // Navegación entre secciones
+        function showSection(index) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach((section, i) => {
+                if (i === index) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+            
+            buttons.forEach((button, i) => {
+                if (i === index) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+
+            // Scroll suave hacia arriba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
